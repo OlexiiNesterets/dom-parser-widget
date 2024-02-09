@@ -1,12 +1,31 @@
-import React, { useContext, useRef } from "react";
+import React, { useRef } from "react";
 import { ITreeItem } from "../types";
-import { WidgetContex } from "../context/WidgetContex";
 import { ReactComponent as EyeSvg } from '../../assets/icons/eye.svg';
 
+const scrollToElement = (el: HTMLElement, displayOnTop: boolean): void => {
+    const offset = displayOnTop ?
+        el.getBoundingClientRect().bottom + window.scrollY - window.innerHeight + 100 :
+        el.getBoundingClientRect().top + window.scrollY - 100;
 
-export const TreeItem = ({ element }: Omit<ITreeItem, 'id'>) => {
+    window.scrollTo({
+        top: offset,
+        behavior: 'smooth'
+    });
+};
 
-    const { displayNonVisible } = useContext(WidgetContex);
+const changeStyles = (el: HTMLElement, initialStyles: string): void => {
+    el.style.cssText += 'box-shadow: #d99000 0px 0px 15px !important';
+    el.style.cssText += 'outline: 3px solid #d99000';
+    el.style.cssText += 'background: #d990008f';
+
+    setTimeout(() => {
+        el.style.cssText = initialStyles;
+    }, 2000);
+};
+
+
+export const TreeItem = ({ element, isVisible, displayOnTop = false }: Omit<ITreeItem, 'id'>) => {
+
 
     const stylesRef = useRef(element.style.cssText);
 
@@ -14,41 +33,26 @@ export const TreeItem = ({ element }: Omit<ITreeItem, 'id'>) => {
         return null;
     }
 
-    const hasSize = (element.offsetHeight && element.offsetWidth) ||
-        (element.getBoundingClientRect().height && element.getBoundingClientRect().width);
-
     const handleClick = () => {
 
-        if (!hasSize) {
+        if (!isVisible) {
             return;
         }
 
-        const testOffset = element.getBoundingClientRect().top + window.scrollY;
+        if (!document.contains(element)) {
+            return;
+        }
 
-        element.style.cssText += 'box-shadow: #d99000 0px 0px 15px !important';
-        // element.style.cssText += 'outline: 2px solid #ff0040d3';
-
-        window.scrollTo({
-            // top: element.offsetTop - 100,
-            top: testOffset - 100,
-            behavior: 'smooth'
-        });
-
-        setTimeout(() => {
-            element.style.cssText = stylesRef.current;
-        }, 2000);
+        scrollToElement(element, displayOnTop);
+        changeStyles(element, stylesRef.current);
     }
 
-    if (displayNonVisible && !hasSize) {
-        return null;
-    }
+    const showDisabled = !isVisible ? 'opacity-45' : '';
 
-    const showDisabled = (!displayNonVisible && !hasSize) ? 'opacity-45' : '';
-
-    const iconForHidden = showDisabled && (<EyeSvg height={15} width={15} />);
+    const iconForHidden = showDisabled && (<EyeSvg height={15} width={15} opacity={0.2} />);
 
     return (
-        <button onClick={handleClick} className={`bg-transparent border-none ${showDisabled}`}>
+        <button onClick={handleClick} disabled={!isVisible} className={`bg-transparent border-none hover:enabled:text-violet-500`}>
             <span className="inline-flex content-center">
                 <span>
                     {element.tagName.toLowerCase()}

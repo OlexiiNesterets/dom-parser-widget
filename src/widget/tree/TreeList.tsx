@@ -1,50 +1,74 @@
 import React, { useState } from "react";
-import { ITreeItems } from "../types";
+import { ISubTree, ITreeItems } from "../types";
 import { TreeItem } from "./TreeListItem";
 import { ReactComponent as ArrowSvg } from '../../assets/icons/arrow.svg';
 
-export const TreeList = ({ items }: ITreeItems) => {
+const SubTree = ({ shouldDisplay, subtreeRoot, subtreeContent }: ISubTree) => {
 
-    // TODO: bug with expand? expand alot of
     const [isExpanded, setIsExpanded] = useState(true);
+
+    const handleClick = () => {
+        setIsExpanded(val => !val);
+    }
+
+    return (
+        <>
+            {shouldDisplay && (
+                <div className="inline-flex">
+                    <button onClick={handleClick} className="p-0 bg-transparent border-none w-6">
+                        <ArrowSvg className="hover:fill-violet-500" width={16} height={20} transform={isExpanded ? 'rotate(90)' : ''} />
+                    </button>
+                    {subtreeRoot}
+                </div>
+            )}
+            {(shouldDisplay && isExpanded) && (
+                <>{subtreeContent}</>
+            )}
+        </>
+    );
+}
+
+export const TreeList = ({ items, showNonVisible, displayOnTop }: ITreeItems) => {
 
     if (!items?.length) {
         return null;
     }
 
-    const handleClick = () => {
-        setIsExpanded(e => !e);
-    }
-
     return (
         <ul className="m-0 p-0 list-none">
             {items.map((item) => {
+
+                const hasVisibleSize = Boolean(
+                    (item.element.offsetHeight && item.element.offsetWidth) ||
+                    (item.element.getBoundingClientRect().height && item.element.getBoundingClientRect().width)
+                );
+
+                const shouldDisplay = hasVisibleSize || !showNonVisible;
+
                 if (item.children?.length) {
                     return (
                         <li className="flex flex-col items-start" key={item.id}>
-                            <div className="inline-flex">
-                                <button onClick={handleClick} className="p-0 bg-transparent border-none w-6">
-                                    <ArrowSvg width={16} height={20} transform={isExpanded ? 'rotate(90)' : ''} />
-                                </button>
-                                <TreeItem element={item.element} />
-                            </div>
-                            {isExpanded && (
-                                <div className="pl-6">
-                                    {/* <div className="flex"> */}
-                                    {/* <span className="p-px ml-10 mr-10 bg-black"></span> */}
-                                    <TreeList items={item.children} />
-                                </div>
-                            )}
+                            <SubTree
+                                shouldDisplay={shouldDisplay}
+                                subtreeRoot={
+                                    <TreeItem element={item.element} isVisible={hasVisibleSize} displayOnTop={displayOnTop} />
+                                }
+                                subtreeContent={
+                                    <div className="pl-6">
+                                        <TreeList items={item.children} showNonVisible={showNonVisible} displayOnTop={displayOnTop} />
+                                    </div>
+                                }
+                            />
+
                         </li>
                     );
                 }
 
                 return (
                     <li className="flex items-start pl-6" key={item.id}>
-                        {/* <span className="pr-10">|</span> */}
-                        {/* <span className="p-px ml-2.5 mr-2.5 bg-black"></span> */}
-
-                        <TreeItem element={item.element} />
+                        {shouldDisplay && (
+                            <TreeItem element={item.element} isVisible={hasVisibleSize} displayOnTop={displayOnTop} />
+                        )}
                     </li>
                 );
             })}

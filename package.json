@@ -1,6 +1,6 @@
 {
-  "name": "dom-parser-widget-test",
-  "version": "1.1.1",
+  "name": "dom-parser-widget",
+  "version": "1.0.2",
   "description": "Test task",
   "license": "Apache-2.0",
   "main": "dist/index.js",
@@ -53,8 +53,6 @@
     "dist"
   ],
   "keywords": [
-    "react",
-    "typescript",
-    "npm"
+    "test"
   ]
 }

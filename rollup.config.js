@@ -1,8 +1,11 @@
 import typescript from '@rollup/plugin-typescript';
 import resolve from '@rollup/plugin-node-resolve';
 import svgr from "@svgr/rollup";
-import css from "rollup-plugin-import-css";
 import commonjs from '@rollup/plugin-commonjs';
+import replace from '@rollup/plugin-replace';
+import clear from 'rollup-plugin-clear';
+import postcss from 'rollup-plugin-postcss';
+import terser from '@rollup/plugin-terser';
 
 import pkg from './package.json'
 
@@ -11,18 +14,35 @@ export default {
   output: [
     {
       file: pkg.main,
-      format: 'es',
+      name: 'DOMParserWidget',
+      format: 'iife',
       exports: 'named',
       strict: false,
-      banner: 'import "./index.css"'
+      globals: {
+        'react': 'React',
+        'react-dom': 'ReactDOM',
+      },
+      compact: true,
     }
   ],
   plugins: [
-    css({ output: 'index.css' }),
     svgr({ exportType: 'named', jsxRuntime: 'classic' }),
-    typescript(),
+    typescript({
+      compilerOptions: {
+        declaration: false,
+      }
+    }),
     resolve(),
     commonjs(),
+    replace({
+      'process.env.NODE_ENV': JSON.stringify( 'production' )
+    }),
+    postcss({
+      plugins: []
+    }),
+    terser(),
+    // clear({
+    //   targets: ['./dist']
+    // }),
   ],
-  external: ['react', 'react-dom']
 }

@@ -6,7 +6,7 @@ enum Screen {
 
 const getIsMobile = () => {
     const mobileScreenWidth = Screen.MOBILE;
-    return window.innerWidth <= mobileScreenWidth;
+    return Number(top?.innerWidth) <= mobileScreenWidth;
 };
 
 export const useIsMobile = () => {

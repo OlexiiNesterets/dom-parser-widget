@@ -3,11 +3,16 @@ import { ITreeItem } from "../types";
 import { ReactComponent as EyeSvg } from '../../assets/icons/eye.svg';
 
 const scrollToElement = (el: HTMLElement, displayOnTop: boolean): void => {
-    const offset = displayOnTop ?
-        el.getBoundingClientRect().bottom + window.scrollY - window.innerHeight + 100 :
-        el.getBoundingClientRect().top + window.scrollY - 100;
 
-    window.scrollTo({
+    if (!top) {
+        return;
+    }
+
+    const offset = displayOnTop ?
+        el.getBoundingClientRect().bottom + top.scrollY - top.innerHeight + 100 :
+        el.getBoundingClientRect().top + top.scrollY - 100;
+
+    top.scrollTo({
         top: offset,
         behavior: 'smooth'
     });
@@ -29,7 +34,7 @@ export const TreeItem = ({ element, isVisible, displayOnTop = false }: Omit<ITre
 
     const stylesRef = useRef(element.style.cssText);
 
-    if (!document.contains(element)) {
+    if (!top?.document.contains(element)) {
         return null;
     }
 
@@ -39,7 +44,7 @@ export const TreeItem = ({ element, isVisible, displayOnTop = false }: Omit<ITre
             return;
         }
 
-        if (!document.contains(element)) {
+        if (!top?.document.contains(element)) {
             return;
         }
 

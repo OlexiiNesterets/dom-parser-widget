@@ -1,77 +1,137 @@
-import React, { useState } from "react";
-import { ISubTree, ITreeItems } from "../types";
-import { TreeItem } from "./TreeListItem";
+import React, { useState } from 'react';
+import { ISubTree, ITreeItem, ITreeItems } from '../types';
+import { TreeItem } from './TreeListItem';
 import { ReactComponent as ArrowSvg } from '../../assets/icons/arrow.svg';
 
-const SubTree = ({ shouldDisplay, subtreeRoot, subtreeContent }: ISubTree) => {
+export const TreeList = ({
+  items,
+  showNonVisible,
+  displayOnTop,
+}: ITreeItems) => {
+  if (!items?.length) {
+    return null;
+  }
 
-    const [isExpanded, setIsExpanded] = useState(true);
+  return (
+    <ul className="m-0 p-0 list-none">
+      {items.map((item) => {
+        return handleItem(item, showNonVisible, displayOnTop);
+      })}
+    </ul>
+  );
+};
 
-    const handleClick = () => {
-        setIsExpanded(val => !val);
-    }
+function handleItem(
+  item: ITreeItem,
+  showNonVisible: boolean,
+  displayOnTop?: boolean
+) {
+  const hasVisibleSize = checkVisibility(item.element);
+  const shouldDisplay = hasVisibleSize || !showNonVisible;
 
+  if (item.children?.length) {
     return (
-        <>
-            {shouldDisplay && (
-                <div className="inline-flex">
-                    <button onClick={handleClick} className="p-0 bg-transparent border-none w-6">
-                        <ArrowSvg className="hover:fill-violet-500" width={16} height={20} transform={isExpanded ? 'rotate(90)' : ''} />
-                    </button>
-                    {subtreeRoot}
-                </div>
-            )}
-            {(shouldDisplay && isExpanded) && (
-                <>{subtreeContent}</>
-            )}
-        </>
+      <li className="flex flex-col items-start" key={item.id}>
+        <SubTree
+          shouldDisplay={shouldDisplay}
+          subtreeRoot={
+            <TreeItem
+              element={item.element}
+              isVisible={hasVisibleSize}
+              displayOnTop={displayOnTop}
+            />
+          }
+          subtreeContent={
+            <div className="pl-6">
+              <TreeList
+                items={item.children}
+                showNonVisible={showNonVisible}
+                displayOnTop={displayOnTop}
+              />
+            </div>
+          }
+        />
+
+        {/* <SubTree
+          shouldDisplay={shouldDisplay}
+          subtreeRoot={
+            <TreeItem
+              element={item.element}
+              isVisible={hasVisibleSize}
+              displayOnTop={displayOnTop}
+            />
+          }
+          subtreeContent={
+            <div className="pl-6">
+              <TreeList
+                items={item.children}
+                showNonVisible={showNonVisible}
+                displayOnTop={displayOnTop}
+              />
+            </div>
+          }
+        /> */}
+      </li>
     );
+  }
+
+  return (
+    <li className="flex items-start pl-6" key={item.id}>
+      {shouldDisplay && (
+        <TreeItem
+          element={item.element}
+          isVisible={hasVisibleSize}
+          displayOnTop={displayOnTop}
+        />
+      )}
+    </li>
+  );
 }
 
-export const TreeList = ({ items, showNonVisible, displayOnTop }: ITreeItems) => {
+function checkVisibility(element: HTMLElement) {
+  if (element.offsetHeight && element.offsetWidth) {
+    return true;
+  }
 
-    if (!items?.length) {
-        return null;
-    }
+  if (
+    element.getBoundingClientRect().height &&
+    element.getBoundingClientRect().width
+  ) {
+    return true;
+  }
 
-    return (
-        <ul className="m-0 p-0 list-none">
-            {items.map((item) => {
+  return false;
+}
 
-                const hasVisibleSize = Boolean(
-                    (item.element.offsetHeight && item.element.offsetWidth) ||
-                    (item.element.getBoundingClientRect().height && item.element.getBoundingClientRect().width)
-                );
+function SubTree({ shouldDisplay, subtreeRoot, subtreeContent }: ISubTree) {
+  const [isExpanded, setIsExpanded] = useState(true);
 
-                const shouldDisplay = hasVisibleSize || !showNonVisible;
+  const handleClick = () => {
+    setIsExpanded((val) => !val);
+  };
 
-                if (item.children?.length) {
-                    return (
-                        <li className="flex flex-col items-start" key={item.id}>
-                            <SubTree
-                                shouldDisplay={shouldDisplay}
-                                subtreeRoot={
-                                    <TreeItem element={item.element} isVisible={hasVisibleSize} displayOnTop={displayOnTop} />
-                                }
-                                subtreeContent={
-                                    <div className="pl-6">
-                                        <TreeList items={item.children} showNonVisible={showNonVisible} displayOnTop={displayOnTop} />
-                                    </div>
-                                }
-                            />
+  if (!shouldDisplay) {
+    return null;
+  }
 
-                        </li>
-                    );
-                }
+  return (
+    <>
+      <div className="inline-flex">
+        <button
+          onClick={handleClick}
+          className="p-0 bg-transparent border-none w-6"
+        >
+          <ArrowSvg
+            className="hover:fill-violet-500"
+            width={16}
+            height={20}
+            transform={isExpanded ? 'rotate(90)' : ''}
+          />
+        </button>
+        {subtreeRoot}
+      </div>
 
-                return (
-                    <li className="flex items-start pl-6" key={item.id}>
-                        {shouldDisplay && (
-                            <TreeItem element={item.element} isVisible={hasVisibleSize} displayOnTop={displayOnTop} />
-                        )}
-                    </li>
-                );
-            })}
-        </ul>
-    );
-};
+      {isExpanded && <>{subtreeContent}</>}
+    </>
+  );
+}

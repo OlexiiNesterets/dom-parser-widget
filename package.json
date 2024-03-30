@@ -13,12 +13,17 @@
     "start": "rollup -c -w --bundleConfigAsCjs"
   },
   "dependencies": {
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0",
     "react-draggable": "^4.4.6",
     "uuid": "^9.0.1"
   },
   "devDependencies": {
+    "@rollup/plugin-babel": "^6.0.4",
     "@rollup/plugin-commonjs": "^25.0.7",
     "@rollup/plugin-node-resolve": "^15.2.3",
+    "@rollup/plugin-replace": "^5.0.5",
+    "@rollup/plugin-terser": "^0.4.4",
     "@rollup/plugin-typescript": "^11.1.6",
     "@svgr/rollup": "^8.1.0",
     "@types/react": "^18.0.0",
@@ -26,28 +31,24 @@
     "@types/uuid": "^9.0.8",
     "babel-core": "^6.26.3",
     "babel-runtime": "^6.26.0",
-    "react": "^18.0.0",
-    "react-dom": "^18.0.0",
     "rollup": "^4.9.6",
-    "rollup-plugin-import-css": "^3.4.0",
+    "rollup-plugin-clear": "^2.0.7",
+    "rollup-plugin-iife": "^0.7.1",
+    "rollup-plugin-postcss": "^4.0.2",
     "rollup-plugin-preserve-directives": "^0.4.0",
     "rollup-plugin-sass": "^1.12.21",
     "rollup-plugin-scss": "^3.0.0",
-    "rollup-plugin-styles": "^4.0.0",
     "sass": "^1.70.0",
     "tailwindcss": "^3.4.1",
     "typescript": "^5.3.3"
-  },
-  "peerDependencies": {
-    "react": "^18.0.0",
-    "react-dom": "^18.0.0"
   },
   "resolutions": {
     "@types/react": "18.0.0",
     "@types/react-dom": "18.0.0"
   },
   "overrides": {
-    "json5": "^1.0.2"
+    "json5": "^1.0.2",
+    "postcss": "^8.4.31"
   },
   "files": [
     "dist"

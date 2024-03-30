@@ -254,16 +254,6 @@
   background-color: rgb(124 58 237 / var(--tw-bg-opacity))
 }
 
-.bg-violet-200 {
-  --tw-bg-opacity: 1;
-  background-color: rgb(221 214 254 / var(--tw-bg-opacity))
-}
-
-.bg-red-700 {
-  --tw-bg-opacity: 1;
-  background-color: rgb(185 28 28 / var(--tw-bg-opacity))
-}
-
 .p-0 {
   padding: 0px
 }
@@ -293,32 +283,24 @@
   outline-style: solid
 }
 
-.hover\:fill-violet-800:hover {
-  fill: #5b21b6
-}
+@media (hover: hover) and (pointer: fine) {
+  .hover\:fill-violet-500:hover {
+    fill: #8b5cf6
+  }
 
-.hover\:fill-violet-500:hover {
-  fill: #8b5cf6
-}
+  .hover\:fill-violet-800:hover {
+    fill: #5b21b6
+  }
 
-.hover\:text-violet-800:hover {
-  --tw-text-opacity: 1;
-  color: rgb(91 33 182 / var(--tw-text-opacity))
-}
+  .hover\:text-violet-800:hover {
+    --tw-text-opacity: 1;
+    color: rgb(91 33 182 / var(--tw-text-opacity))
+  }
 
-.hover\:text-green-400:hover {
-  --tw-text-opacity: 1;
-  color: rgb(74 222 128 / var(--tw-text-opacity))
-}
-
-.hover\:enabled\:text-green-400:enabled:hover {
-  --tw-text-opacity: 1;
-  color: rgb(74 222 128 / var(--tw-text-opacity))
-}
-
-.hover\:enabled\:text-violet-500:enabled:hover {
-  --tw-text-opacity: 1;
-  color: rgb(139 92 246 / var(--tw-text-opacity))
+  .hover\:enabled\:text-violet-500:enabled:hover {
+    --tw-text-opacity: 1;
+    color: rgb(139 92 246 / var(--tw-text-opacity))
+  }
 }
 
 @media (max-width: 400px) {

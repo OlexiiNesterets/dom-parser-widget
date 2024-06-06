@@ -21,6 +21,8 @@ export const DomParserWidget = () => {
     handleExpand,
     handleModeChange,
     handlePositionChange,
+    scrollStrategy,
+    visibilityStrategy,
   } = useControl();
 
   if (isRemoved) {
@@ -31,12 +33,14 @@ export const DomParserWidget = () => {
 
   const list = (
     <>
-      {hasDomTree && isExpanded && (
+      {isExpanded && (
         <div className="p-4 overflow-auto flex-1 bg-violet-300">
           <TreeList
             items={domTree}
-            showNonVisible={onlyVisible}
-            displayOnTop={isTopPosition && isMobile}
+            strategies={{
+              scrollStrategy,
+              visibilityStrategy,
+            }}
           />
         </div>
       )}
